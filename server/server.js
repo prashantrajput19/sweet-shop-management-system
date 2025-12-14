@@ -2,6 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import connectDB from "./db/dbConnect.js";
+import authRoute from './routes/auth.route.js'
+import sweetsRoute from './routes/sweets.route.js'
+import inventoryRoute from './routes/inventory.route.js'
+import { authMiddleware } from "./middleware/auth.js";
 import cors from 'cors';
 
 const app = express();
@@ -28,6 +32,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api/auth', authRoute)
+app.use('/api', authMiddleware, sweetsRoute)
+app.use('/api/sweets', authMiddleware, inventoryRoute)
 
 app.get('/', (req, res) => {
     res.send('Server is running');
